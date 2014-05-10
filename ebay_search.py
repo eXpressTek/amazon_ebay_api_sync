@@ -108,34 +108,34 @@ for search_tuple in search_return:
             print "sku does NOT exist INSERT'ing new entry"
             sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, SubCategory, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}', '{11}')""".format(
              sku,
-             conn.escape_string(poller_type),
-             conn.escape_string(images),
-             conn.escape_string(lastUpdate),
-             conn.escape_string(subcategory),
-             conn.escape_string(category),
-             conn.escape_string(price),
-             conn.escape_string(currency),
-             conn.escape_string(description),
-             conn.escape_string(title),
-             conn.escape_string(seller),
-             conn.escape_string(url)
+             db.escape_string(poller_type),
+             db.escape_string(images),
+             db.escape_string(lastUpdate),
+             db.escape_string(subcategory),
+             db.escape_string(category),
+             db.escape_string(price),
+             db.escape_string(currency),
+             db.escape_string(description),
+             db.escape_string(title),
+             db.escape_string(seller),
+             db.escape_string(url)
             )
 
         # else its an existing record and we need to update
         else:
             print "sku does exist UPDATE'ing the EXISTING entry"
             sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', SubCategory='{3}', Category='{4}', Price={5}, CurrencyID='{6}', Description='{7}', Title='{8}', Seller='{9}', URL='{10}' WHERE ItemID={11}""".format(
-             conn.escape_string(poller_type),
-             conn.escape_string(images),
-             conn.escape_string(lastUpdate),
-             conn.escape_string(subcategory),
-             conn.escape_string(category),
-             conn.escape_string(price),
-             conn.escape_string(currency),
-             conn.escape_string(description),
-             conn.escape_string(title),
-             conn.escape_string(seller),
-             conn.escape_string(url),
+             db.escape_string(poller_type),
+             db.escape_string(images),
+             db.escape_string(lastUpdate),
+             db.escape_string(subcategory),
+             db.escape_string(category),
+             db.escape_string(price),
+             db.escape_string(currency),
+             db.escape_string(description),
+             db.escape_string(title),
+             db.escape_string(seller),
+             db.escape_string(url),
              sku
             )
 
