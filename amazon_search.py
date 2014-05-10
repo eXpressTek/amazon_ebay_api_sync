@@ -1,3 +1,13 @@
+#!/usr/bin/python
+#
+# ebay_search.py
+#
+# uses a MySQL database to connect to ebay's search API, and return results to the database
+#
+# 2014.05.10 eXpressTek Inc, initial release (Warren Kenner)
+#
+# prefers python 2.7.x to support the mysql database bindings.
+
 import bottlenose
 import xmltodict
 import xml.etree.ElementTree as ElementTree
