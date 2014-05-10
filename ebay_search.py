@@ -106,7 +106,20 @@ for search_tuple in search_return:
         if (recordNum == 0L) or (recordNum == 0):
         
             print "sku does NOT exist INSERT'ing new entry"
-            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, SubCategory, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}', '{11}')""".format(sku, poller_type, images, lastUpdate, subcategory, category, price, currency, description, title, seller, url)
+            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, SubCategory, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}', '{11}')""".format(
+             conn.escape_string(sku),
+             conn.escape_string(poller_type),
+             conn.escape_string(images),
+             conn.escape_string(lastUpdate),
+             conn.escape_string(subcategory),
+             conn.escape_string(category),
+             conn.escape_string(price),
+             conn.escape_string(currency),
+             conn.escape_string(description),
+             conn.escape_string(title),
+             conn.escape_string(seller),
+             conn.escape_string(url)
+            )
 
         # else its an existing record and we need to update
         else:
