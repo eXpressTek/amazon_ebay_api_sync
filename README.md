@@ -29,8 +29,8 @@ To setup)
 
 7) run the search scripts (running the search python scripts), the available data will be in the sync table.
 
-$PATH/python ebay_search.py
-$PATH/python amazon_search.py
+$PATH/python sync_ebay.py
+$PATH/python sync_amazon.py
 
 use cron to run these as regularly as needed.
 

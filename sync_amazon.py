@@ -1,12 +1,11 @@
 #!/usr/bin/python
 #
-# ebay_search.py
+# sync_amazon.py
 #
 # uses a MySQL database to connect to ebay's search API, and return results to the database
 #
 # 2014.05.10 eXpressTek Inc, initial release (Warren Kenner)
 #
-# prefers python 2.7.x to support the mysql database bindings.
 
 import bottlenose
 import xmltodict
@@ -33,7 +32,7 @@ cursor = db.cursor()
 ######################################
 # grab the Amazon credentials from the config table of the database
 ######################################
-cursor.execute("SELECT * FROM sync_config WHERE Sync_Type LIKE \"Amazon\"")
+cursor.execute("SELECT * FROM sync_config WHERE Sync_Type LIKE 'Amazon'")
 
 #get the return values
 dbreturn = cursor.fetchall()
@@ -53,7 +52,7 @@ keydict = json.loads(synckey)
 amazon = bottlenose.Amazon(str(keydict['keyID'].decode('ascii', 'ignore')), str(keydict['secret'].decode('ascii', 'ignore')), str(keydict['associate_id'].decode('ascii', 'ignore')))
 
 #get the searches
-cursor.execute("SELECT * FROM sync_searches WHERE search_poller LIKE \"amazon\"")
+cursor.execute("SELECT * FROM sync_searches WHERE search_poller LIKE 'amazon'")
 
 #get the return values
 search_return = cursor.fetchall()
@@ -111,19 +110,52 @@ for search_tuple in search_return:
         print "{1} got_sku={0}".format(sku,stamp()),
         
         # check if its already in the database
-        recordNum = cursor.execute("SELECT * FROM sync WHERE ItemID LIKE \"%s\"", (sku))
+        recordNum = cursor.execute("SELECT * FROM sync WHERE ItemID LIKE '{0}'".format(sku))
+
+        # initialize the sql_statement
+        sql_statement = ''
 
         # if its not in the database, INSERT the new record
         if (recordNum == 0L) or (recordNum == 0):
-            print "sku doesnt exist INSERT'ing new entry"
-            cursor.execute("INSERT INTO sync (ItemID, Type, Images, LastUpdate, SubCategory, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")",(sku, poller_type, images, lastUpdate, subcategory, category, price, currency, description, title, seller, url))
+        
+            print "sku does NOT exist INSERT'ing new entry"
+            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL, subcategory) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', '{10}','{11}')""".format(
+             sku,
+             db.escape_string(poller_type),
+             db.escape_string(images),
+             lastUpdate,
+             db.escape_string(category),
+             price,
+             db.escape_string(currency),
+             db.escape_string(description),
+             db.escape_string(title),
+             db.escape_string(seller),
+             db.escape_string(url),
+             db.escape_string(subcategory)
+            )
 
         # else its an existing record and we need to update
         else:
             print "sku does exist UPDATE'ing the EXISTING entry"
-            cursor.execute("UPDATE sync SET ItemID=\"%s\", Type=\"%s\", Images=\"%s\", LastUpdate=\"%s\", SubCategory=\"%s\", Category=\"%s\", Price=%s, CurrencyID=\"%s\", Description=\"%s\", Title=\"%s\", Seller=\"%s\", URL=\"%s\" WHERE ItemID=%s",(sku, poller_type, images, lastUpdate, subcategory, category, price, currency, description, title, seller, url, sku))
+            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', subcategory='{10}' WHERE ItemID={11}""".format(
+             db.escape_string(poller_type),
+             db.escape_string(images),
+             lastUpdate,
+             db.escape_string(category),
+             price,
+             db.escape_string(currency),
+             db.escape_string(description),
+             db.escape_string(title),
+             db.escape_string(seller),
+             db.escape_string(url),
+             db.escape_string(subcategory),
+             sku
+            )
+
+        print "{0} DEBUG: {1}".format(stamp(),sql_statement)
+        cursor.execute(sql_statement)
 
         # make it sleep a tick before starting the next record to allow for rate-limiting behavior
         time.sleep(.5)
 
-print "{0} ebay_sync.py complete".format(stamp())
+print "{0} sync_amazon.py complete".format(stamp())

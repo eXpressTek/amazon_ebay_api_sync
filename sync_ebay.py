@@ -1,12 +1,11 @@
 #!/usr/bin/python
 #
-# ebay_search.py
+# sync_ebay.py
 #
 # uses a MySQL database to connect to ebay's search API, and return results to the database
 #
 # 2014.05.10 eXpressTek Inc, initial release (Warren Kenner)
 #
-# prefers python 2.7.x to support the mysql database bindings.
 
 from ebaysdk.finding import Connection
 import json
@@ -99,8 +98,8 @@ for search_tuple in search_return:
         # check if its already in the database
         recordNum = cursor.execute("SELECT * FROM sync WHERE ItemID LIKE '{0}'".format(sku))
 
-	# initialize the sql_statement
-	sql_statement = ''
+        # initialize the sql_statement
+        sql_statement = ''
 
         # if its not in the database, INSERT the new record
         if (recordNum == 0L) or (recordNum == 0):
@@ -143,4 +142,4 @@ for search_tuple in search_return:
         cursor.execute(sql_statement)
 
         
-print "{0} ebay_sync.py complete".format(stamp())
+print "{0} sync_ebay.py complete".format(stamp())
