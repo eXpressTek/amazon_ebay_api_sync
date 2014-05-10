@@ -106,12 +106,11 @@ for search_tuple in search_return:
         if (recordNum == 0L) or (recordNum == 0):
         
             print "sku does NOT exist INSERT'ing new entry"
-            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, SubCategory, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}', '{11}')""".format(
+            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}')""".format(
              sku,
              db.escape_string(poller_type),
              db.escape_string(images),
              lastUpdate,
-             db.escape_string(subcategory),
              db.escape_string(category),
              price,
              db.escape_string(currency),
@@ -124,11 +123,10 @@ for search_tuple in search_return:
         # else its an existing record and we need to update
         else:
             print "sku does exist UPDATE'ing the EXISTING entry"
-            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', SubCategory='{3}', Category='{4}', Price={5}, CurrencyID='{6}', Description='{7}', Title='{8}', Seller='{9}', URL='{10}' WHERE ItemID={11}""".format(
+            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}' WHERE ItemID={10}""".format(
              db.escape_string(poller_type),
              db.escape_string(images),
              lastUpdate,
-             db.escape_string(subcategory),
              db.escape_string(category),
              price,
              db.escape_string(currency),
