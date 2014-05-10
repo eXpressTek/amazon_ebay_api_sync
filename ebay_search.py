@@ -81,10 +81,10 @@ for search_tuple in search_return:
     for item in items:
         sku = item['itemId']['value']
         poller_type = "ebay"
-        seller = None
+        seller = ''
         images = item['galleryURL']['value']
         lastUpdate = time.time()
-        subcategory = None
+        subcategory = ''
         category = item['primaryCategory']['categoryName']['value']
         price = item['sellingStatus']['currentPrice']['value']
         currency = item['sellingStatus']['currentPrice']['currencyId']['value']
@@ -106,7 +106,7 @@ for search_tuple in search_return:
         if (recordNum == 0L) or (recordNum == 0):
         
             print "sku does NOT exist INSERT'ing new entry"
-            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}')""".format(
+            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}','{11}')""".format(
              sku,
              db.escape_string(poller_type),
              db.escape_string(images),
@@ -117,13 +117,14 @@ for search_tuple in search_return:
              db.escape_string(description),
              db.escape_string(title),
              db.escape_string(seller),
-             db.escape_string(url)
+             db.escape_string(url),
+             db.escape_string(subcategory)
             )
 
         # else its an existing record and we need to update
         else:
             print "sku does exist UPDATE'ing the EXISTING entry"
-            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}' WHERE ItemID={10}""".format(
+            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', subcategory='{10}' WHERE ItemID={11}""".format(
              db.escape_string(poller_type),
              db.escape_string(images),
              lastUpdate,
@@ -134,6 +135,7 @@ for search_tuple in search_return:
              db.escape_string(title),
              db.escape_string(seller),
              db.escape_string(url),
+             db.escape_string(subcategory),
              sku
             )
 
