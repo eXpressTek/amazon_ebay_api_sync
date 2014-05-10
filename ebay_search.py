@@ -106,7 +106,7 @@ for search_tuple in search_return:
         if (recordNum == 0L) or (recordNum == 0):
         
             print "sku does NOT exist INSERT'ing new entry"
-            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}','{11}')""".format(
+            sql_statement = u"""INSERT INTO sync (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL, subcategory) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, '{7}', '{8}', '{9}', '{10}','{11}')""".format(
              sku,
              db.escape_string(poller_type),
              db.escape_string(images),
