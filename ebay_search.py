@@ -88,7 +88,7 @@ for search_tuple in search_return:
         category = item['primaryCategory']['categoryName']['value']
         price = item['sellingStatus']['currentPrice']['value']
         currency = item['sellingStatus']['currentPrice']['currencyId']['value']
-        description = None
+        description = ''
         title = item['title']['value']
         url = item['viewItemURL']['value']
         raw = item
