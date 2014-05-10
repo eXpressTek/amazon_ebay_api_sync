@@ -135,7 +135,7 @@ for search_tuple in search_return:
              conn.escape_string(description),
              conn.escape_string(title),
              conn.escape_string(seller),
-             conn.escape_string(url)
+             conn.escape_string(url),
              sku
             )
 
