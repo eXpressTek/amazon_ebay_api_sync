@@ -138,7 +138,7 @@ for search_tuple in search_return:
              sku
             )
 
-        print "{0} DEBUG: {1}".format(stamp(),sql_statement)
+#        print "{0} DEBUG: {1}".format(stamp(),sql_statement)
         cursor.execute(sql_statement)
 
         
