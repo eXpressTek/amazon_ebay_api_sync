@@ -137,7 +137,7 @@ for search_tuple in search_return:
         # else its an existing record and we need to update
         else:
             print "sku does exist UPDATE'ing the EXISTING entry"
-            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', subcategory='{10}' WHERE ItemID={11}""".format(
+            sql_statement = u"""UPDATE sync SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', subcategory='{10}' WHERE ItemID='{11}'""".format(
              db.escape_string(poller_type),
              db.escape_string(json.dumps(images)),
              lastUpdate,
@@ -156,6 +156,6 @@ for search_tuple in search_return:
         cursor.execute(sql_statement)
 
         # make it sleep a tick before starting the next record to allow for rate-limiting behavior
-        time.sleep(.5)
+        time.sleep(.2)
 
 print "{0} sync_amazon.py complete".format(stamp())
