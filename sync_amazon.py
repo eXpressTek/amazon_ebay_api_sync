@@ -131,7 +131,7 @@ for search_tuple in search_return:
              db.escape_string(title),
              db.escape_string(seller),
              db.escape_string(url),
-             db.escape_string(subcategory)
+             db.escape_string(json.dumps(subcategory))
             )
 
         # else its an existing record and we need to update
@@ -148,7 +148,7 @@ for search_tuple in search_return:
              db.escape_string(title),
              db.escape_string(seller),
              db.escape_string(url),
-             db.escape_string(subcategory),
+             db.escape_string(json.dumps(subcategory)),
              sku
             )
 
