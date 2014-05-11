@@ -156,6 +156,6 @@ for search_tuple in search_return:
         cursor.execute(sql_statement)
 
         # make it sleep a tick before starting the next record to allow for rate-limiting behavior
-        time.sleep(.2)
+        time.sleep(.3)
 
 print "{0} sync_amazon.py complete".format(stamp())
