@@ -15,6 +15,9 @@ import MySQLdb
 import credentials
 import time
 import sys
+import re
+
+debug = True
 
 #make a timestamp
 def stamp():
@@ -69,12 +72,14 @@ for search_tuple in search_return:
     search_num, search_poller, search_text = search_tuple
     
     # encode search text as string
+    if debug:
+        print "search is: "+search_text
     search_text = search_text.encode('ascii','ignore')
 
     #run the item search, get the response as XML and convert to dictionary
     response = amazon.ItemSearch(Keywords=search_text, SearchIndex="All")
     xmldict = xmltodict.parse(response)
-
+    
     #index to the Item level
     items = xmldict['ItemSearchResponse']['Items']['Item']
     
@@ -84,27 +89,53 @@ for search_tuple in search_return:
         itemLookupInfo = amazon.ItemLookup(ItemId=item['ASIN'], ResponseGroup="Large")
         itemXMLdict = xmltodict.parse(itemLookupInfo)
         itemInfo = itemXMLdict['ItemLookupResponse']['Items']['Item']
+        if debug:
+            print json.dumps(itemXMLdict)
         
         #mappings for the database fields
         sku = itemInfo['ASIN']
         poller_type = "amazon"
-        images = itemInfo['ImageSets']
+        images = itemInfo['MediumImage']['URL']
         lastUpdate = time.time()
         category = itemInfo['ItemAttributes']['ProductGroup']
-        subcategory = itemInfo['BrowseNodes']
+        dirty_subcategory = itemInfo['BrowseNodes']['BrowseNode']
+        subcategory = []
+        for sub in dirty_subcategory:
+            subcategory.append(sub['Name']+" ")
         price = float(itemInfo['ItemAttributes']['ListPrice']['Amount'])/100
         currency = itemInfo['ItemAttributes']['ListPrice']['CurrencyCode']
         dirty_description = itemInfo['ItemAttributes']['Feature']
         description = []
-        
         #sanitize the description
-        for desc in description:
-            desc = re.sub('\\', '', desc)
+        for desc in dirty_description:
+            if debug:
+                print desc
+            desc = re.sub('\\\\', '', desc)
             description.append(desc)
         title = itemInfo['ItemAttributes']['Title']
         seller = itemInfo['ItemAttributes']['Publisher']
         url = itemInfo['DetailPageURL']
-        raw = itemInfo
+        
+        if debug:
+            print ""
+            print ""
+            print "INFO:"
+            print ""
+            print sku 
+            print poller_type
+            print images 
+            print lastUpdate 
+            print category
+            print subcategory
+            print price 
+            print currency
+            print description
+            print title
+            print seller
+            print url
+            print ""
+            print ""
+            sys.exit(0)
         
         #print progress of SKU's with timestamp
         print "{1} got_sku={0}".format(sku,stamp()),
