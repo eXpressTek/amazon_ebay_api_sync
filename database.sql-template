@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `sync_config` (
 --
 
 INSERT INTO `sync_config` (`Sync_Type`, `Sync_Key`, `Sync_Value`) VALUES
-('Amazon', 'JSON_KEY', '{"keyID":"REDACTED", "secret":"REDACTED", "associate_id":"REDACTED"}'),
+('Amazon', 'JSON_KEY', '{"access_key":"REDACTED", "secret_key":"REDACTED", "associate_tag":"REDACTED", "locale":"us"}'),
 ('EBAY', 'JSON_KEY', '{"key":"REDACTED"}');
 
 -- --------------------------------------------------------

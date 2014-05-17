@@ -12,6 +12,7 @@ import json
 import time
 import credentials
 import MySQLdb
+import sys
 
 #make a timestamp
 def stamp():
@@ -74,10 +75,11 @@ for search_tuple in search_return:
     
     #get the response dictionary from the call
     mydict = api.response_dict()
-    
     #unpack the return items and map to relevant Database fields
     items = mydict['searchResult']['item']
     for item in items:
+        print item
+        sys.exit(0)
         sku = item['itemId']['value']
         poller_type = "ebay"
         seller = ''
