@@ -19,6 +19,11 @@ import re
 
 debug = True
 
+#do a version check
+version_check = subprocess.check_output(['git', 'diff', 'origin/master'])
+if (version_check.strip() != ""):
+    print "WARN: This software may be out of date. Please see about updating"
+
 #make a timestamp
 def stamp():
   return time.strftime("%a, %d %b %Y %H:%M:%S +0000",time.gmtime())
