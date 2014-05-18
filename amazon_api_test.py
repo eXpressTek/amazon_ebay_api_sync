@@ -25,6 +25,11 @@ debug = False
 def stamp():
   return time.strftime("%a, %d %b %Y %H:%M:%S +0000",time.gmtime())
 
+#do a version check
+version_check = subprocess.check_output(['git', 'diff', 'origin/master'])
+if (version_check.strip() != ""):
+    print "WARN: This software may be out of date. Please see about updating"
+
 #get the credentials for the database from the db.conf file. (the import credentials is the actual function to do this.)
 creds = credentials.load_file_config()
 

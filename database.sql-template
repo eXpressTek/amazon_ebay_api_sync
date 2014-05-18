@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 09, 2014 at 04:56 PM
+-- Generation Time: May 18, 2014 at 07:47 AM
 -- Server version: 5.1.73
 -- PHP Version: 5.3.3
 
@@ -23,19 +23,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sync`
+-- Table structure for table `sync_amazon`
 --
 
-CREATE TABLE IF NOT EXISTS `sync` (
+CREATE TABLE IF NOT EXISTS `sync_amazon` (
   `ItemID` varchar(100) NOT NULL,
   `Type` varchar(25) NOT NULL,
   `Images` varchar(16000) NOT NULL,
-  `LastUpdate` double NOT NULL,
+  `LastUpdate` varchar(255) NOT NULL,
   `SubCategory` varchar(16000) DEFAULT NULL,
   `Category` varchar(255) NOT NULL,
-  `Price` double NOT NULL,
-  `CurrencyID` varchar(25) NOT NULL,
+  `Price` varchar(255) NOT NULL,
   `Description` varchar(1023) NOT NULL,
+  `Brand` varchar(255) NOT NULL,
+  `Manufacturer` varchar(255) NOT NULL,
   `Title` varchar(255) NOT NULL,
   `Seller` varchar(255) NOT NULL,
   `URL` varchar(1024) NOT NULL,
@@ -59,8 +60,30 @@ CREATE TABLE IF NOT EXISTS `sync_config` (
 --
 
 INSERT INTO `sync_config` (`Sync_Type`, `Sync_Key`, `Sync_Value`) VALUES
-('Amazon', 'JSON_KEY', '{"access_key":"REDACTED", "secret_key":"REDACTED", "associate_tag":"REDACTED", "locale":"us"}'),
-('EBAY', 'JSON_KEY', '{"key":"REDACTED"}');
+('ebay', 'JSON_KEY', '{"key":"REDACTED"}'),
+('Amazon', 'JSON_KEY', '{"access_key":"REDACTED", "secret_key":"REDACTED", "associate_tag":"REDACTED", "locale":"us"}');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sync_ebay`
+--
+
+CREATE TABLE IF NOT EXISTS `sync_ebay` (
+  `ItemID` varchar(100) NOT NULL,
+  `Type` varchar(25) NOT NULL,
+  `Images` varchar(16000) NOT NULL,
+  `LastUpdate` double NOT NULL,
+  `Category` varchar(255) NOT NULL,
+  `Price` double NOT NULL,
+  `CurrencyID` varchar(25) NOT NULL,
+  `Description` varchar(1023) NOT NULL,
+  `ItemSpecifics` varchar(1024) NOT NULL,
+  `Title` varchar(255) NOT NULL,
+  `Seller` varchar(255) NOT NULL,
+  `URL` varchar(1024) NOT NULL,
+  PRIMARY KEY (`ItemID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -72,16 +95,17 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
   `search_number` int(11) NOT NULL AUTO_INCREMENT,
   `search_poller` varchar(255) NOT NULL,
   `search_text` varchar(255) NOT NULL,
+  `number_of_results` int(11) NOT NULL,
   PRIMARY KEY (`search_number`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `sync_searches`
 --
 
-INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`) VALUES
-(1, 'amazon', 'Kindle 3g'),
-(2, 'ebay', 'Poweredge 1955');
+INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `number_of_results`) VALUES
+(1, 'amazon', 'kindle 3g', 300),
+(2, 'ebay', 'poweredge 1955', 300);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
