@@ -80,8 +80,11 @@ if search_return is 0L:
 for search_tuple in search_return:
     if timing:
         print stamp()+"running searches"
+    
     # unpack search tuple to get search text
     search_num, search_poller, search_text, number_of_results = search_tuple
+    
+    print stamp()+"running search \""+search_text+"\""
     
     results = 0
     while (results <= number_of_results):
@@ -93,8 +96,12 @@ for search_tuple in search_return:
             if timing:
                 print stamp()+"about to make api call"
             #execute the search once connected. er
-            page = int(results/100)
-            find.execute('findItemsAdvanced', {'keywords': search_text, 'paginationInput':{'entriesPerPage':100, 'pageNumber':page}, 'itemFilter':{'name':'ListingType','value':'AuctionWithBIN'}, 'itemFilter':{'name':'ListingType','value':'FixedPrice'}})
+            
+            num_to_search = 100
+            if number_of_results < 100:
+                num_to_search = number_of_results
+            page = int(results/num_to_search)
+            find.execute('findItemsAdvanced', {'keywords': search_text, 'paginationInput':{'entriesPerPage':num_to_search, 'pageNumber':(page+1)}, 'itemFilter':{'name':'ListingType','value':'AuctionWithBIN'}, 'itemFilter':{'name':'ListingType','value':'FixedPrice'}})
             if timing:
                 print stamp()+"finished making api call (executed)"
         except ConnectionError as e:
@@ -204,44 +211,51 @@ for search_tuple in search_return:
             sql_statement = ''
     
             # if its not in the database, INSERT the new record
-            if (recordNum == 0L) or (recordNum == 0):
-            
-                print "sku does NOT exist INSERT'ing new entry"
-                sql_statement = u"""INSERT INTO sync_ebay (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL, ItemSpecifics) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', '{10}','{11}')""".format(
-                 sku,
-                 db.escape_string(poller_type),
-                 db.escape_string(images),
-                 lastUpdate,
-                 db.escape_string(category),
-                 price,
-                 db.escape_string(currency),
-                 db.escape_string(str(description)),
-                 db.escape_string(title),
-                 db.escape_string(seller),
-                 db.escape_string(url),
-                 db.escape_string(str(item_specifics))
-                )
-    
-            # else its an existing record and we need to update
-            else:
-                print "sku does exist UPDATE'ing the EXISTING entry"
-                sql_statement = u"""UPDATE sync_ebay SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', ItemSpecifics='{10}' WHERE ItemID={11}""".format(
-                 db.escape_string(poller_type),
-                 db.escape_string(images),
-                 lastUpdate,
-                 db.escape_string(category),
-                 price,
-                 db.escape_string(currency),
-                 db.escape_string(str(description)),
-                 db.escape_string(title),
-                 db.escape_string(seller),
-                 db.escape_string(url),
-                 db.escape_string(str(item_specifics)),
-                 sku
-                )
-    
-    #        print "{0} DEBUG: {1}".format(stamp(),sql_statement)
-            cursor.execute(sql_statement)
+            try:
+                if (recordNum == 0L) or (recordNum == 0):
+                
+                    print "sku does NOT exist INSERT'ing new entry"
+                    sql_statement = u"""INSERT INTO sync_ebay (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL, ItemSpecifics) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', '{10}','{11}')""".format(
+                     sku,
+                     db.escape_string(poller_type),
+                     db.escape_string(images),
+                     lastUpdate,
+                     db.escape_string(category),
+                     price,
+                     db.escape_string(currency),
+                     db.escape_string(str(description)),
+                     db.escape_string(title),
+                     db.escape_string(seller),
+                     db.escape_string(url),
+                     db.escape_string(str(item_specifics))
+                    )
+                
+                # else its an existing record and we need to update
+                else:
+                    print "sku does exist UPDATE'ing the EXISTING entry"
+                    sql_statement = u"""UPDATE sync_ebay SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', ItemSpecifics='{10}' WHERE ItemID={11}""".format(
+                     db.escape_string(poller_type),
+                     db.escape_string(images),
+                     lastUpdate,
+                     db.escape_string(category),
+                     price,
+                     db.escape_string(currency),
+                     db.escape_string(str(description)),
+                     db.escape_string(title),
+                     db.escape_string(seller),
+                     db.escape_string(url),
+                     db.escape_string(str(item_specifics)),
+                     sku
+                    )
+                
+    #            print "{0} DEBUG: {1}".format(stamp(),sql_statement)
+                cursor.execute(sql_statement)
+            except UnicodeEncodeError as err:
+                if debug:
+                    print err
+                print stamp()+"Malformed Data - Unicode Encode Error - Skipping"
+                results = results + 1
+                continue
             results = results + 1
     
             
