@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `sync_amazon` (
   `SubCategory` varchar(16000) DEFAULT NULL,
   `Category` varchar(255) NOT NULL,
   `Price` varchar(255) NOT NULL,
-  `Description` varchar(1023) NOT NULL,
+  `Description` longtext NOT NULL,
   `Brand` varchar(255) NOT NULL,
   `Manufacturer` varchar(255) NOT NULL,
   `Title` varchar(255) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `sync_ebay` (
   `Category` varchar(255) NOT NULL,
   `Price` double NOT NULL,
   `CurrencyID` varchar(25) NOT NULL,
-  `Description` varchar(1023) NOT NULL,
+  `Description` longtext NOT NULL,
   `ItemSpecifics` varchar(1024) NOT NULL,
   `Title` varchar(255) NOT NULL,
   `Seller` varchar(255) NOT NULL,
@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
 --
 
 INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `number_of_results`) VALUES
-(1, 'amazon', 'kindle 3g', 300),
-(2, 'ebay', 'poweredge 1955', 300);
+(1, 'amazon', 'kindle 3g', 20),
+(2, 'ebay', 'poweredge 1955', 20);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
