@@ -14,7 +14,7 @@ To setup)
 
 2) Python 2.7.x is required (python-mysqldb requirement)
 
-3) install python-mysqldb
+3) install python-mysqldb<br>
    install lxml
 
 4) cp db.conf-template to db.conf and edit
