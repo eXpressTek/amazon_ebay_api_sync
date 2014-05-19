@@ -22,8 +22,8 @@ def stamp():
   return time.strftime("%a, %d %b %Y %H:%M:%S +0000 ",time.gmtime())
 
 debug = False
-timing = True
-smallDescription = True
+timing = False
+smallDescription = False
 
 #this is to get the connections to be quiet.
 class ConnectionError(Exception):
