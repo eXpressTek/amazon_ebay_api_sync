@@ -32,9 +32,9 @@ class ConnectionError(Exception):
 if timing:
     print stamp()+"doing a version check"
 #do a version check
-version_check = subprocess.check_output(['git', 'diff', 'origin/master'])
-if (version_check.strip() != ""):
-    print "WARN: This software may be out of date. Please see about updating"
+#version_check = subprocess.check_output(['git', 'diff', 'origin/master'])
+#if (version_check.strip() != ""):
+#    print "WARN: This software may be out of date. Please see about updating"
 
 if timing:
     print stamp()+"getting creds from files and database"
