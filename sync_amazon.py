@@ -174,6 +174,15 @@ for search_tuple in search_return:
                             price['LowestNewPrice']['Currency'] = itemInfo['OfferSummary']['LowestNewPrice']['CurrencyCode']
                         else:
                             price['LowestNewPrice']['Currency'] = "Price Exists, No Amount Listed"
+                single_price = ""
+                single_price_currency = ""
+                if 'ListPrice' in price.keys():
+                    single_price = price['ListPrice']['Amount']
+                    single_price_currency = price['ListPrice']['Currency']
+                else:
+                    if price != {}:
+                        single_price = price[price.keys()[0]]['Amount']
+                        single_price_currency = price[price.keys()[0]]['Currency']
                 description = ""
                 if 'Feature' in itemInfo['ItemAttributes'].keys():
                     dirty_description = itemInfo['ItemAttributes']['Feature']
@@ -237,11 +246,13 @@ for search_tuple in search_return:
                 if (recordNum == 0L) or (recordNum == 0):
                 
                     print "sku does NOT exist INSERT'ing new entry"
-                    sql_statement = u"""INSERT INTO sync_amazon (ItemID, Type, Images, Category, Price, Description, Title, Seller, subcategory, URL, Brand, Manufacturer, LastUpdate) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')""".format(
+                    sql_statement = u"""INSERT INTO sync_amazon (ItemID, Type, Images, Category, Price, Currency, AllPrices, Description, Title, Seller, subcategory, URL, Brand, Manufacturer, LastUpdate) VALUES ('{0}', '{1}', '{2}', '{3}', {4}, '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', {14})""".format(
                      db.escape_string(sku.encode('utf-8')),
                      db.escape_string(poller_type.encode('utf-8')),
                      db.escape_string(images.encode('utf-8')),
                      db.escape_string(category.encode('utf-8')),
+                     float(single_price),
+                     db.escape_string(single_price_currency.encode('utf-8')),
                      db.escape_string(json.dumps(price).encode('utf-8')),
                      db.escape_string(json.dumps(description).encode('utf-8')),
                      db.escape_string(title.encode('utf-8')),
@@ -256,11 +267,13 @@ for search_tuple in search_return:
                 # else its an existing record and we need to update
                 else:
                     print "sku does exist UPDATE'ing the EXISTING entry"
-                    sql_statement = u"""UPDATE sync_amazon SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price='{4}', Description='{5}', Title='{6}', Seller='{7}', URL='{8}', subcategory='{9}' WHERE ItemID='{10}'""".format(
+                    sql_statement = u"""UPDATE sync_amazon SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, Currency='{5}', AllPrices='{6}', Description='{7}', Title='{8}', Seller='{9}', URL='{10}', subcategory='{11}' WHERE ItemID='{12}'""".format(
                      db.escape_string(poller_type),
                      db.escape_string(images),
                      float(lastUpdate),
                      db.escape_string(category),
+                     float(single_price),
+                     db.escape_string(single_price_currency),
                      db.escape_string(json.dumps(price).encode('utf-8')),
                      db.escape_string(str(json.dumps(description).decode('ascii', 'ignore'))),
                      db.escape_string(str(title.decode('ascii', 'ignore'))),
