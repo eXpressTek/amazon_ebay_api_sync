@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 18, 2014 at 07:47 AM
+-- Generation Time: Jun 06, 2014 at 01:33 PM
 -- Server version: 5.1.73
 -- PHP Version: 5.3.3
 
@@ -29,17 +29,19 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `sync_amazon` (
   `ItemID` varchar(100) NOT NULL,
   `Type` varchar(25) NOT NULL,
-  `Images` varchar(16000) NOT NULL,
+  `Images` text NOT NULL,
   `LastUpdate` varchar(255) NOT NULL,
-  `SubCategory` varchar(16000) DEFAULT NULL,
+  `SubCategory` text,
   `Category` varchar(255) NOT NULL,
-  `Price` varchar(255) NOT NULL,
-  `Description` longtext NOT NULL,
+  `Price` double NOT NULL,
+  `Currency` varchar(50) NOT NULL,
+  `AllPrices` text NOT NULL,
+  `Description` text NOT NULL,
   `Brand` varchar(255) NOT NULL,
   `Manufacturer` varchar(255) NOT NULL,
   `Title` varchar(255) NOT NULL,
   `Seller` varchar(255) NOT NULL,
-  `URL` varchar(1024) NOT NULL,
+  `URL` text NOT NULL,
   PRIMARY KEY (`ItemID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -97,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
   `search_text` varchar(255) NOT NULL,
   `number_of_results` int(11) NOT NULL,
   PRIMARY KEY (`search_number`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `sync_searches`
@@ -105,7 +107,9 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
 
 INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `number_of_results`) VALUES
 (1, 'amazon', 'kindle 3g', 20),
-(2, 'ebay', 'poweredge 1955', 20);
+(2, 'ebay', 'poweredge 1955', 20),
+(5, 'amazon', 'fan', 20),
+(6, 'ebay', 'fan', 20);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
