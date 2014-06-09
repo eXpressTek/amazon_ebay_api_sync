@@ -82,7 +82,7 @@ for search_tuple in search_return:
         print stamp()+"running searches"
     
     # unpack search tuple to get search text
-    search_num, search_poller, search_text, number_of_results = search_tuple
+    search_num, search_poller, search_text, search_category, number_of_results = search_tuple
     
     print stamp()+"running search \""+search_text+"\""
     

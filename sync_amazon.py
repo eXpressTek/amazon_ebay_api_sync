@@ -8,6 +8,7 @@
 #
 
 from amazonproduct import API
+import amazonproduct
 from lxml import etree
 #import bottlenose
 import xmltodict
@@ -92,15 +93,21 @@ if search_return is 0L:
 for search_tuple in search_return:
 
     # unpack search tuple to get search text
-    search_num, search_poller, search_text, number_of_results = search_tuple
+    search_num, search_poller, search_text, search_category, number_of_results = search_tuple
     
     # encode search text as string
     if debug:
         print "search is: "+search_text
     search_text = search_text.encode('ascii','ignore')
-
+    search_category = search_category.encode('ascii','ignore')
+    if search_category == "NULL" or search_category == "":
+        search_category = "All"
     #run the item search, get the response as XML and convert to dictionary
-    response =  api.item_search("All", Keywords=search_text)
+    try:
+        response =  api.item_search(search_category, Keywords=search_text)
+    except amazonproduct.errors.InvalidSearchIndex as e:
+        print "Invalid search_category. Please check search entry at search: "+search_text+", category: "+search_category
+        continue
     if debug:
         print response
         print response.results
@@ -138,7 +145,8 @@ for search_tuple in search_return:
                 if 'MediumImage' in itemInfo.keys():
                     images = itemInfo['MediumImage']['URL']
                 lastUpdate = time.time()
-                category = itemInfo['ItemAttributes']['ProductGroup']
+                #category = itemInfo['ItemAttributes']['ProductGroup']
+                category = search_category
                 dirty_subcategory = itemInfo['BrowseNodes']['BrowseNode']
                 subcategory = ""
                 for sub in dirty_subcategory:
@@ -176,9 +184,9 @@ for search_tuple in search_return:
                             price['LowestNewPrice']['Currency'] = "Price Exists, No Amount Listed"
                 single_price = 0.0
                 single_price_currency = ""
-                if 'ListPrice' in price.keys():
-                    single_price = price['ListPrice']['Amount']
-                    single_price_currency = price['ListPrice']['Currency']
+                if 'LowestNewPrice' in price.keys():
+                    single_price = price['LowestNewPrice']['Amount']
+                    single_price_currency = price['LowestNewPrice']['Currency']
                 else:
                     if price != {}:
                         single_price = price[price.keys()[0]]['Amount']

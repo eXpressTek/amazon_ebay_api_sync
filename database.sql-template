@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 08, 2014 at 10:45 PM
+-- Generation Time: Jun 09, 2014 at 11:22 AM
 -- Server version: 5.1.73
 -- PHP Version: 5.3.3
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `sync_amazon` (
   `Category` varchar(255) NOT NULL,
   `Price` double NOT NULL,
   `Currency` varchar(50) NOT NULL,
-  `AllPrices` text NOT NULL,
+  `AllPrices` text,
   `Description` text NOT NULL,
   `Brand` varchar(255) NOT NULL,
   `Manufacturer` varchar(255) NOT NULL,
@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
   `search_number` int(11) NOT NULL AUTO_INCREMENT,
   `search_poller` varchar(255) NOT NULL,
   `search_text` varchar(255) NOT NULL,
+  `search_category` varchar(255) NOT NULL,
   `number_of_results` int(11) NOT NULL,
   PRIMARY KEY (`search_number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
@@ -103,27 +104,29 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
 -- Dumping data for table `sync_searches`
 --
 
-INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `number_of_results`) VALUES
-(1, 'amazon', 'kindle 3g', 20),
-(2, 'ebay', 'poweredge 1955', 20),
-(24, 'amazon', 'Flat Panel', 100),
-(14, 'amazon', 'GPS Systems', 100),
-(13, 'amazon', 'Digital Cameras', 100),
-(12, 'amazon', 'Tablets', 100),
-(11, 'amazon', 'HDTV', 100),
-(10, 'amazon', 'Printers', 100),
-(9, 'amazon', 'Unlocked Cell Phones', 100),
-(8, 'amazon', 'Laptops', 100),
-(7, 'amazon', 'Desktops', 100),
-(23, 'ebay', 'GPS Systems', 100),
-(22, 'ebay', 'Desktops', 100),
-(21, 'ebay', 'Laptops', 100),
-(20, 'ebay', 'Unlocked Cell Phones', 100),
-(19, 'ebay', 'Printers', 100),
-(18, 'ebay', 'HDTV', 100),
-(17, 'ebay', 'Tablets', 100),
-(16, 'ebay', 'Digital Cameras', 100),
-(25, 'ebay', 'Flat Panel', 100);
+INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `search_category`, `number_of_results`) VALUES
+(1, 'amazon', 'kindle 3g', 'BOGUS', 20),
+(2, 'ebay', 'poweredge 1955', 'NOT DEFINED FOR EBAY', 20),
+(5, 'amazon', 'fan', 'Appliances', 20),
+(6, 'ebay', 'fan', 'Appliances', 20),
+(24, 'amazon', 'Flat Panel', 'Electronics', 100),
+(14, 'amazon', 'GPS Systems', 'Electronics', 100),
+(13, 'amazon', 'Digital Cameras', 'Electronics', 100),
+(12, 'amazon', 'Tablets', 'Electronics', 100),
+(11, 'amazon', 'HDTV', 'Electronics', 100),
+(10, 'amazon', 'Printers', 'Electronics', 100),
+(9, 'amazon', 'Unlocked Cell Phones', 'Electronics', 100),
+(8, 'amazon', 'Laptops', 'Electronics', 100),
+(7, 'amazon', 'Desktops', 'Electronics', 100),
+(23, 'ebay', 'GPS Systems', 'NOT DEFINED FOR EBAY', 100),
+(22, 'ebay', 'Desktops', 'NOT DEFINED FOR EBAY', 100),
+(21, 'ebay', 'Laptops', 'NOT DEFINED FOR EBAY', 100),
+(20, 'ebay', 'Unlocked Cell Phones', 'NOT DEFINED FOR EBAY', 100),
+(19, 'ebay', 'Printers', 'NOT DEFINED FOR EBAY', 100),
+(18, 'ebay', 'HDTV', 'NOT DEFINED FOR EBAY', 100),
+(17, 'ebay', 'Tablets', 'NOT DEFINED FOR EBAY', 100),
+(16, 'ebay', 'Digital Cameras', 'NOT DEFINED FOR EBAY', 100),
+(25, 'ebay', 'Flat Panel', 'NOT DEFINED FOR EBAY', 100);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
