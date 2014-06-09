@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2014 at 01:33 PM
+-- Generation Time: Jun 08, 2014 at 10:45 PM
 -- Server version: 5.1.73
 -- PHP Version: 5.3.3
 
@@ -74,16 +74,14 @@ INSERT INTO `sync_config` (`Sync_Type`, `Sync_Key`, `Sync_Value`) VALUES
 CREATE TABLE IF NOT EXISTS `sync_ebay` (
   `ItemID` varchar(100) NOT NULL,
   `Type` varchar(25) NOT NULL,
-  `Images` varchar(16000) NOT NULL,
+  `Images` varchar(16000) DEFAULT NULL,
   `LastUpdate` double NOT NULL,
-  `Category` varchar(255) NOT NULL,
-  `Price` double NOT NULL,
-  `CurrencyID` varchar(25) NOT NULL,
-  `Description` longtext NOT NULL,
-  `ItemSpecifics` varchar(1024) NOT NULL,
-  `Title` varchar(255) NOT NULL,
-  `Seller` varchar(255) NOT NULL,
-  `URL` varchar(1024) NOT NULL,
+  `Category` varchar(255) DEFAULT NULL,
+  `Price` double DEFAULT NULL,
+  `CurrencyID` varchar(25) DEFAULT NULL,
+  `Title` varchar(255) DEFAULT NULL,
+  `Seller` varchar(255) DEFAULT NULL,
+  `URL` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`ItemID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -99,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
   `search_text` varchar(255) NOT NULL,
   `number_of_results` int(11) NOT NULL,
   PRIMARY KEY (`search_number`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `sync_searches`
@@ -108,8 +106,24 @@ CREATE TABLE IF NOT EXISTS `sync_searches` (
 INSERT INTO `sync_searches` (`search_number`, `search_poller`, `search_text`, `number_of_results`) VALUES
 (1, 'amazon', 'kindle 3g', 20),
 (2, 'ebay', 'poweredge 1955', 20),
-(5, 'amazon', 'fan', 20),
-(6, 'ebay', 'fan', 20);
+(24, 'amazon', 'Flat Panel', 100),
+(14, 'amazon', 'GPS Systems', 100),
+(13, 'amazon', 'Digital Cameras', 100),
+(12, 'amazon', 'Tablets', 100),
+(11, 'amazon', 'HDTV', 100),
+(10, 'amazon', 'Printers', 100),
+(9, 'amazon', 'Unlocked Cell Phones', 100),
+(8, 'amazon', 'Laptops', 100),
+(7, 'amazon', 'Desktops', 100),
+(23, 'ebay', 'GPS Systems', 100),
+(22, 'ebay', 'Desktops', 100),
+(21, 'ebay', 'Laptops', 100),
+(20, 'ebay', 'Unlocked Cell Phones', 100),
+(19, 'ebay', 'Printers', 100),
+(18, 'ebay', 'HDTV', 100),
+(17, 'ebay', 'Tablets', 100),
+(16, 'ebay', 'Digital Cameras', 100),
+(25, 'ebay', 'Flat Panel', 100);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

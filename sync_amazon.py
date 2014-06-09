@@ -174,7 +174,7 @@ for search_tuple in search_return:
                             price['LowestNewPrice']['Currency'] = itemInfo['OfferSummary']['LowestNewPrice']['CurrencyCode']
                         else:
                             price['LowestNewPrice']['Currency'] = "Price Exists, No Amount Listed"
-                single_price = ""
+                single_price = 0.0
                 single_price_currency = ""
                 if 'ListPrice' in price.keys():
                     single_price = price['ListPrice']['Amount']
@@ -246,14 +246,13 @@ for search_tuple in search_return:
                 if (recordNum == 0L) or (recordNum == 0):
                 
                     print "sku does NOT exist INSERT'ing new entry"
-                    sql_statement = u"""INSERT INTO sync_amazon (ItemID, Type, Images, Category, Price, Currency, AllPrices, Description, Title, Seller, subcategory, URL, Brand, Manufacturer, LastUpdate) VALUES ('{0}', '{1}', '{2}', '{3}', {4}, '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', {14})""".format(
+                    sql_statement = u"""INSERT INTO sync_amazon (ItemID, Type, Images, Category, Price, Currency, Description, Title, Seller, subcategory, URL, Brand, Manufacturer, LastUpdate) VALUES ('{0}', '{1}', '{2}', '{3}', {4}, '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', {13})""".format(
                      db.escape_string(sku.encode('utf-8')),
                      db.escape_string(poller_type.encode('utf-8')),
                      db.escape_string(images.encode('utf-8')),
                      db.escape_string(category.encode('utf-8')),
                      float(single_price),
                      db.escape_string(single_price_currency.encode('utf-8')),
-                     db.escape_string(json.dumps(price).encode('utf-8')),
                      db.escape_string(json.dumps(description).encode('utf-8')),
                      db.escape_string(title.encode('utf-8')),
                      db.escape_string(seller).encode('utf-8'),
@@ -267,14 +266,13 @@ for search_tuple in search_return:
                 # else its an existing record and we need to update
                 else:
                     print "sku does exist UPDATE'ing the EXISTING entry"
-                    sql_statement = u"""UPDATE sync_amazon SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, Currency='{5}', AllPrices='{6}', Description='{7}', Title='{8}', Seller='{9}', URL='{10}', subcategory='{11}' WHERE ItemID='{12}'""".format(
+                    sql_statement = u"""UPDATE sync_amazon SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, Currency='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', subcategory='{10}' WHERE ItemID='{11}'""".format(
                      db.escape_string(poller_type),
                      db.escape_string(images),
                      float(lastUpdate),
                      db.escape_string(category),
                      float(single_price),
                      db.escape_string(single_price_currency),
-                     db.escape_string(json.dumps(price).encode('utf-8')),
                      db.escape_string(str(json.dumps(description).decode('ascii', 'ignore'))),
                      db.escape_string(str(title.decode('ascii', 'ignore'))),
                      db.escape_string(seller),
@@ -292,6 +290,12 @@ for search_tuple in search_return:
                 if debug:
                     print u
                 print stamp()+" Malformed Data - Unicode Decode Error - Skipping"
+                results = results + 1
+                continue
+            except UnicodeEncodeError as u:
+                if debug:
+                    print u
+                print stamp()+" Malformed Data - Unicode Encode Error - Skipping"
                 results = results + 1
                 continue
             results = results + 1

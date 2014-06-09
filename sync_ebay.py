@@ -113,94 +113,25 @@ for search_tuple in search_return:
         if debug:
             print "mydict: "
             print mydict
-    
         #unpack the return items and map to relevant Database fields
         if timing:
             print stamp()+"getting each item"
         items = mydict['searchResult']['item']
-        item_ids = []
-        if timing:
-            print stamp()+"packing into a big list"
-        for item in items:
-            item_ids.append(item['itemId']['value'])
-        if debug:
-            print "Item IDs: "
-            print item_ids
-        if timing:
-            print stamp()+"finished packing into big list"
-        pos = 0
-        listNum = 0
-        separated_item_ids = []
-        separated_item_ids.append([])
-        if timing:
-            print stamp()+"separating big list into smaller list for api call"
-        for item_id in item_ids:
-            if (pos % 20 == 0) and (pos != 0):
-                listNum = listNum + 1
-                separated_item_ids.append([])
-            separated_item_ids[listNum].append(item_id)
-            pos = pos + 1
-        specifics = {}
-        if timing:
-            print stamp()+"finished separating into smaller list, asking ebay for additional information"
-        try: 
-            for item_id_list in separated_item_ids:
-                shop = shopping(appid=keydict['key'])
-                if timing:
-                    print stamp()+"executing api getMultipleItems call"
-                shop.execute('GetMultipleItems', {'itemID':item_id_list, 'includeSelector':'Details, ItemSpecifics, Description'})
-                if timing:
-                    print stamp()+"finished getting previous call"
-                if debug:
-                    print dir(shop)
-                specifics_partial_dict = shop.response_dict()
-                if specifics_partial_dict is None:
-                    print "Unable to get specifics for some reason, exiting"
-                    sys.exit(0)
-                if debug:
-                    print specifics_partial_dict
-                specifics_dict = specifics_partial_dict['Item']
-                if timing:
-                    print stamp()+"putting current data into overarching dict"
-                for item in specifics_dict:
-                    specifics[item['ItemID']['value']] = item
-                if timing:
-                    print stamp()+"finished putting current data into data"
-        except ConnectionError as e:
-            print "got a Connection Error"
-            raise e
-            sys.exit(0)
-        if timing:
-            print stamp()+"finished asking for additional information, separating into each one, and mapping to database"
+        
         for item in items:
             sku = item['itemId']['value']
             poller_type = "ebay"
             seller = ''
-            images = item['galleryURL']['value']
+            images = ''
+            if "galleryURL" in item.keys():
+                if "value" in item['galleryURL'].keys():
+                    images = item['galleryURL']['value']
             lastUpdate = time.time()
             category = item['primaryCategory']['categoryName']['value']
             price = item['sellingStatus']['currentPrice']['value']
             currency = item['sellingStatus']['currentPrice']['currencyId']['value']
             title = item['title']['value']
             url = item['viewItemURL']['value']
-            specifics_object = specifics[sku]
-            if "ItemSpecifics" in specifics_object.keys():
-                item_specifics_list = specifics_object['ItemSpecifics']['NameValueList']
-                item_specifics = ""
-                for item_specs in item_specifics_list:
-                    try:
-                        item_specifics = item_specifics + item_specs['Name']['value']+" : "+item_specs['Value']['value']+", "
-                    except TypeError as e:
-                        item_specifics = item_specs
-                if isinstance(item_specifics, basestring):
-                    item_specifics = item_specifics[:-2]
-                item['specifics'] = specifics_object
-            description = ''
-            if "Description" in specifics_object.keys():
-                description = specifics_object["Description"]
-            if smallDescription:
-                description = "TEST"
-            
             #print progress of SKU's with timestamp
             print "{1} got_sku={0}".format(sku,stamp()),
             
@@ -209,13 +140,13 @@ for search_tuple in search_return:
     
             # initialize the sql_statement
             sql_statement = ''
-    
+            
             # if its not in the database, INSERT the new record
             try:
                 if (recordNum == 0L) or (recordNum == 0):
                 
                     print "sku does NOT exist INSERT'ing new entry"
-                    sql_statement = u"""INSERT INTO sync_ebay (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Description, Title, Seller, URL, ItemSpecifics) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', '{10}','{11}')""".format(
+                    sql_statement = u"""INSERT INTO sync_ebay (ItemID, Type, Images, LastUpdate, Category, Price, CurrencyID, Title, Seller, URL) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}')""".format(
                      sku,
                      db.escape_string(poller_type),
                      db.escape_string(images),
@@ -223,29 +154,26 @@ for search_tuple in search_return:
                      db.escape_string(category),
                      price,
                      db.escape_string(currency),
-                     db.escape_string(str(description)),
                      db.escape_string(title),
                      db.escape_string(seller),
-                     db.escape_string(url),
-                     db.escape_string(str(item_specifics))
+                     db.escape_string(url)
                     )
+                    
                 
                 # else its an existing record and we need to update
                 else:
                     print "sku does exist UPDATE'ing the EXISTING entry"
-                    sql_statement = u"""UPDATE sync_ebay SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Description='{6}', Title='{7}', Seller='{8}', URL='{9}', ItemSpecifics='{10}' WHERE ItemID={11}""".format(
+                    sql_statement = u"""UPDATE sync_ebay SET Type='{0}', Images='{1}', LastUpdate='{2}', Category='{3}', Price={4}, CurrencyID='{5}', Title='{6}', Seller='{7}', URL='{8}' WHERE ItemID={9}""".format(
                      db.escape_string(poller_type),
                      db.escape_string(images),
                      lastUpdate,
                      db.escape_string(category),
                      price,
                      db.escape_string(currency),
-                     db.escape_string(str(description)),
                      db.escape_string(title),
                      db.escape_string(seller),
                      db.escape_string(url),
-                     db.escape_string(str(item_specifics)),
-                     sku
+                     db.escape_string(sku)
                     )
                 
     #            print "{0} DEBUG: {1}".format(stamp(),sql_statement)
